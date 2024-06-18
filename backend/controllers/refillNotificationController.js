@@ -1,15 +1,36 @@
 
-const refillNotification = require('../models/refillNotification')
+const { PORT } = require('../config');
+const refillNotification = require('../models/refillNotification');
+const { BoxByProdId } = require('./boxController');
+const { getRackById } = require('./rackController');
+
 
 // Create a refill notification
 const createRefillNotification = async (req, res) => {
+    
     try {
         const { title, message } = req.body;
-        const newNotification = new refillNotification({ title, message });
-        await newNotification.save();
-        res.status(201).json(newNotification);
+
+        prodid=req.body.product;
+        rackid=req.body.rack;
+        quantity=req.body.quantity;
+
+
+        const box = await BoxByProdId(prodid);
+        //pour l'instant je travail juste avec l'id du rack que e met dans le boxid
+        const newNotification = new refillNotification({box:prodid,rack:rackid,quantity:quantity });
+        newNotification.save().then((notification)=>{
+            res.status(201).json(notification);
+        }).catch((error)=>{
+            res.status(500).json({ error: 'Failed to create refill notification' });
+            console.log(`j'ai reçu une req pour 3`);
+            console.log(box);
+        })
+
     } catch (error) {
         res.status(500).json({ error: 'Failed to create refill notification' });
+        console.log(`j'ai reçu une req pour 1`);
+        console.log(box);
     }
 };
 
@@ -17,7 +38,22 @@ const createRefillNotification = async (req, res) => {
 const getAllRefillNotifications = async (req, res) => {
     try {
         const notifications = await refillNotification.find();
-        res.status(200).json(notifications);
+        console.log(notifications)
+        const updatedNotifications = await Promise.all(notifications.map(async (notification) => {
+            const boxResponse = await fetch(`http://localhost:${PORT}/rawMaterials/${notification.box}`);
+            const boxData = await boxResponse.json();
+            console.log(boxData);
+            const rackResponse = await fetch(`http://localhost:${PORT}/rack/${notification.rack}`);
+            const rackData = await rackResponse.json();
+            return {
+                product: boxData.name,
+                barrcode: boxData.barreCode,
+                rack: rackData.address,
+                quantity: notification.quantity
+            };
+            
+        }));
+        res.status(200).json(updatedNotifications);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch refill notifications' });
     }
@@ -69,6 +105,8 @@ const deleteRefillNotificationById = async (req, res) => {
         res.status(500).json({ error: 'Failed to delete refill notification' });
     }
 };
+
+
 
 module.exports = {
     createRefillNotification,

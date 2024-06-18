@@ -2,6 +2,7 @@
 
 import { Button, Table, Label, TextInput, Modal } from "flowbite-react";
 import { useEffect, useState } from "react";
+import { API_URL } from "../config";
 
 export function ProductTable() {
   const [data, setData] = useState([]);
@@ -31,7 +32,7 @@ export function ProductTable() {
   
 
     try {
-      const response = await fetch(`http://localhost:8099/rawMaterials/${currentData._id}`, {
+      const response = await fetch(`${API_URL}/rawMaterials/${currentData._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -53,8 +54,36 @@ export function ProductTable() {
     }
   };
 
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    if (!currentData) {
+      console.error("Invalid data");
+      return;
+    }
+    try {
+      const response = await fetch(`${API_URL}/rawMaterials`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(currentData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const createdData = await response.json();
+      setData((prevData) => [...prevData, createdData]);
+      setOpenModal2(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+
+  }
+
   useEffect(() => {
-    const url = "http://localhost:8099/rawMaterials";
+    const url = `${API_URL}/rawMaterials`;
 
     const fetchData = async () => {
       try {
@@ -71,16 +100,15 @@ export function ProductTable() {
 
   return (
     <>
-      <Modal show={openModal} onClose={() => setOpenModal2(false)}>
+      <Modal show={openModal2} onClose={() => setOpenModal2(false)}>
         <Modal.Header>Ajouter Nouveau produit</Modal.Header>
         <Modal.Body>
-          <form onSubmit={handleSave}>
+          <form onSubmit={handleCreate}>
             <div className="mb-2 block">
               <Label htmlFor="input-gray" color="gray" value="Nom produit" />
               <TextInput
                 id="input-gray"
                 name="name"
-                value={currentData ? currentData.name : ""}
                 onChange={handleChange}
                 required
                 color="gray"
@@ -91,7 +119,6 @@ export function ProductTable() {
               <TextInput
                 id="input-gray"
                 name="supplier"
-                value={currentData ? currentData.supplier : ""}
                 onChange={handleChange}
                 required
                 color="gray"
@@ -102,17 +129,16 @@ export function ProductTable() {
               <TextInput
                 id="input-gray"
                 name="barreCode"
-                value={currentData ? currentData.barreCode : ""}
                 onChange={handleChange}
                 required
                 color="gray"
               />
             </div>
             <div className="flex justify-end">
-              <Button color="success" type="submit">
-                Modifier
+              <Button color="success" type="submit" onClick={handleCreate}>
+                Ajouter
               </Button>
-              <Button color="gray" onClick={() => setOpenModal(false)} className="ml-2">
+              <Button color="gray" onClick={() => setOpenModal2(false)} className="ml-2">
                 Annuler
               </Button>
             </div>
@@ -171,7 +197,7 @@ export function ProductTable() {
       </Modal>
 
       <div className="flex justify-end" >
-        <Button color="success" >
+        <Button color="success" onClick={()=>{setOpenModal2(true)}} >
           Ajouter Nouveau produit
         </Button>
       </div>

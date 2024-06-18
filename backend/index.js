@@ -10,7 +10,8 @@ const boxRouter = require('./routes/box');
 const storeRouter = require('./routes/store');
 const rackRouter = require('./routes/rack');
 const refillNotificationRouter = require('./routes/refillNotification');
-const router = express.Router()
+const { PORT } = require('./config');
+
 
 const app= express();
 
@@ -41,14 +42,14 @@ app.get('/', async (req, res) => {
 
 
 
-mongoose.connect('mongodb://localhost:27017/myproj', 
+mongoose.connect('mongodb://172.17.0.4:27017/myproj', 
             { useNewUrlParser: true, useUnifiedTopology: true })
             .then(()=>
                 {
                     console.log("You have been connected sucessfully to Mongo");
-                    app.listen(8099,()=>{
-                        console.log(`App is listening on the port: ${8099}`)
-                        console.log(`http://localhost:${8099}/`)
+                    app.listen(PORT,()=>{
+                        console.log(`App is listening on the port: ${PORT}`)
+                        console.log(`http://localhost:${PORT}/`)
                     });
                 }
                 )

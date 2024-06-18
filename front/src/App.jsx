@@ -4,10 +4,9 @@ import './App.css'
 import { LandingPage } from "./pages/landing";
 import Alimentateur from "./pages/alimentateur/Alimentateur";
 import Error404 from "./pages/Error404";
-import Magasinier from "./pages/Magasinier";
-import { ProductManage } from "./pages/ProductManage";
+import { ProductManage } from "./pages/alimentateur/ProductManage";
 import { StoreManage } from "./pages/StoreManage";
-import Producteur from "./pages/Producteur";
+import Producteur from "./pages/producteur/Producteur";
 export default function App() {
   return(
     <BrowserRouter>
@@ -17,7 +16,7 @@ export default function App() {
       <Route path="/alimentateur/gerer-produits" element={<ProductManage/>}></Route>
       <Route path="/alimentateur/gerer-store" element={<StoreManage/>}></Route>
 
-      <Route path="/prodcuteur" element={<Producteur/>}></Route>
+      <Route path="/producteur" element={<Producteur/>}></Route>
       <Route path="*" element={<Error404/>}></Route>
 
       </Routes>

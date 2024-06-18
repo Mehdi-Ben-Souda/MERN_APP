@@ -1,8 +1,4 @@
 import { UserCard } from "../components/UserCard"
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Alimentateur from './Alimentateur';
-import Producteur from './Producteur';
-import Magasinier from './Magasinier';
 
 
 export function LandingPage() {
@@ -15,7 +11,7 @@ export function LandingPage() {
 
         <div className="flex justify-center">
           <UserCard user="Alimentateur" path="/alimentateur" text="Espace pour re-approvisionner les rack de lignes de production." />     
-          <UserCard user="Magasinier" path="/magasinier" text="Espace dedier au producteur afin de  ." />
+          <UserCard user="Producteur" path="/producteur" text="Espace dedier au producteur afin de faire des alertes pour le réapprovisionement ." />
         </div>
       </>
     );

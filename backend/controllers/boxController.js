@@ -34,3 +34,8 @@ exports.getBoxeByRawMaterialId = async (req, res) => {
   const box = await Box.findOne({ rawMaterial: req.params.id });
   res.status(200).json(box);
 };
+
+exports.BoxByProdId = async (id) => {
+  const box = await Box.findOne({ rawMaterial: id });
+  return box;
+};

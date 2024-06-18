@@ -14,7 +14,7 @@ export function UserCard(params) {
           {params.text}
         </p>
         <Link to={params.path}>
-          <Button gradientMonochrome="lime" >
+          <Button color="success" >
             Accerder à l'espace {params.user}
             <svg className="-mr-1 ml-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path

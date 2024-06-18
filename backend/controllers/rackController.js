@@ -24,6 +24,19 @@ exports.getRack = async (req, res) => {
     }
 };
 
+exports.getRackById = async (id) => {
+    try {
+        const rack = await Rack.findById(id).populate('boxes.box');
+        if (!rack) {
+            return null;
+        }
+        return rack;
+    } catch (error) {
+        return null;
+    }
+};
+
+
 // Lire tous les racks
 exports.getRacks = async (req, res) => {
     try {
@@ -81,3 +94,4 @@ exports.addBox = async (req, res) => {
         res.status(400).send(error);
     }
 };
+
